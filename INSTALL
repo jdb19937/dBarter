@@ -1,0 +1,19 @@
+Installation Instructions For Barter 0.1
+----------------------------------------
+
+If you do not have the GNU C Compiler, you will probably need to
+install it (ftp://ftp.gnu.org).
+
+If you are not on an ix86-linux system, you will need to obtain and
+compile Berkeley DB >= 2.7.5 (http://www.sleepycat.com) and the
+GNU Multi-Precision Arithmetic Library >= 2.02 (ftp://ftp.gnu.org).
+Install the static libraries in the "lib" directory as "libdb.a"
+and "libgmp.a" respectively.
+
+Now type "make install" and hopefully things will go smoothly.
+
+(If it doesn't work, proceed old-school-style with Makefile and header
+file inspection and modification.  Would anyone like to write an
+autoconf script?)
+
+Questions and comments may be sent to Dan Brumleve <nothing@shout.net>.

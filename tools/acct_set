@@ -1,0 +1,59 @@
+#!/usr/bin/perl
+
+use bom;
+use bom::common;
+use bom::txn;
+use Getopt::Long;
+
+sub usage {
+  print STDERR "Usage: acct_set [-d db_directory] acct attribute value\n";
+  print STDERR "attribute is one of (public, secret, modulus, promise)\n";
+  exit 1;
+}
+
+my %valid_attribute = map { $_ => 1 }
+ (qw(public secret modulus promise flags passwd));
+
+$options{'d'} = "/usr/local/dbarter/db";
+GetOptions(\%options, 'd=s') eq 1 or usage;
+my $acctid = shift(@ARGV) or usage;
+my $key = shift(@ARGV) or usage;
+$valid_attribute{$key} or usage;
+my $value = shift(@ARGV) or usage;
+
+bom_db_init($options{'d'});
+
+my $acct = new bom::acct $acctid;
+
+try_txn {
+  my $exists = $acct->exists;
+  
+  if (!$exists) {
+    print STDERR "$0: acct $acct does not exist\n";
+    exit 1;
+  }
+
+  if ($key eq 'promise') {
+    $acct->promise($value);
+  } elsif ($key eq 'public') {
+    $acct->public(new dmath::bz $value);
+  } elsif ($key eq 'modulus') {
+    $acct->modulus(new dmath::bz $value);
+  } elsif ($key eq 'secret') {
+    $acct->secret(new dmath::bz $value);
+  } elsif ($key eq 'flags') {
+    $acct->flags($value);
+  } elsif ($key eq 'passwd') {
+    $acct->passwd($value);
+  }
+
+  $acct->write;
+} catch {
+  print STDERR "$0: transaction failed: $_\n";
+  bom_db_exit;
+  exit 1;
+};
+
+bom_db_exit;
+exit 0;
+

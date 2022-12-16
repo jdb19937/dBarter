@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>The Barter Perl API</title>
+</head>
+
+<body bgcolor=#ffffff>
+<h3>The Barter Perl API</h3>
+
+<hr>
+
+<p>
+Barter comes with three Perl modules to make interacting with the server
+as easy as possible. All of them come with the standard installation.
+</p>
+
+<hr>
+<h4><code>dmath</code></h4>
+<p>
+Using <code>dmath</code> will give you access to the following packages:
+</p>
+
+<ul>
+<li><code>dmath::bz</code> -- an integer class
+<li><code>dmath::bq</code> -- a rational number class
+</ul>
+
+<p>
+<code>dmath::bz</code> is used for representing RSA keys, and
+<code>dmath::bq</code> is used for representing quantity.  The
+functions <code>rsa_keygen</code> and <code>rsa_crypt</code>
+will also be exported.
+</p>
+
+<hr>
+<h4><code>bom</code></h4>
+
+<p>
+Using <code>bom</code> will give you access to the following packages:
+</p>
+
+<ul>
+<li>bom::denom
+<li>bom::user
+<li>bom::note
+<li>bom::event
+<li>bom::value
+<li>bom::portfolio
+<li>bom::txn
+</ul>
+
+<p>
+Essentially, the same objects covered in section 1., with the addition
+of the txn (transaction) object which facilitates local database
+transactions.  The objects also know how to store themselves and
+their relationships on disk, using the same BerkeleyDB interface
+that the server itself uses.  In order to use a database, you
+must call <i>bom_db_init</i> with a database directory as its
+argument. Well-behaved programs also call <i>bom_db_exit</i>
+upon termination.
+</p>
+
+<hr>
+<h4><code>bif</code></h4>
+
+<p>
+Using <code>bif</code> will give you access to the following packages:
+</p>
+
+<ul>
+<li>bif::client
+</ul>
+
+<p>
+<code>bif::client</code> allows you to talk to the Barter server.
+Its methods are the same as the server command names, but all
+arguments and return values are converted from/to the appropriate
+types defined in <code>bom</code>.
+</p>
+
+</body>
+</html>

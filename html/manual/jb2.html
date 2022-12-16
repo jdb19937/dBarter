@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>Barter Objects</title>
+</head>
+
+<body bgcolor=#ffffff>
+<h3>Barter Objects</h3>
+
+<hr>
+
+<p>
+Barter's functionality centers around a few basic object types:
+<i><i>denomination</i>s</i>, <i>user</i>s</i>, <i><i>note</i>s</i>, <i><i>event</i>s</i>,
+<i><i>value</i>s</i>, and <i><i>portfolio</i>s</i>.
+</p>
+
+<p>
+<i>Denominations</i> are the units of <i>value</i>.  They can be created
+by any <i>user</i> with appropriate permissions.  A <i>denomination</i>
+has the following attributes: <i><i>issuer</i></i> (the <i>user</i> which created
+it) and <i>profile</i> (a text string describing its meaning).
+</p>
+
+<p>
+<i><i>User</i>s</i> are accounts on the Barter Server.  <i>User</i>s have
+the following attributes: <i>role</i> (chairman, promiser and customer),
+<i><i>public key</i></i> (the <i>user</i>'s <i>public key</i>, an integer), <i>secret key</i>
+(the <i>user</i>'s secret key, an integer), <i>modulus</i> (the <i>user</i>'s
+ modulus, also an integer), and a <i>portfolio</i> that the server
+recognizes the <i>user</i>'s ownership of.  The server does not need
+to know the <i>value</i> of <i>secret key</i>, but any client applications
+will need this information.
+</p>
+
+<p>
+<i>Notes</i> are instruments of <i>value</i> transfer.  They have the
+following attributes: <i><i>portfolio</i></i> (a <i>portfolio</i> that the
+ <i>note</i> contains), <i>challenge</i> (a random integer encrypted
+ so only the owner can know what it is),
+and <i><i>issuer</i></i> (the <i>user</i> that created it).
+A <i>user</i> can use the <code><i>note</i>_withdraw</code> command to create
+a <i>note</i>.  The <i>user</i> specifies a <i><i>portfolio</i></i> in the command, which
+becomes the <i><i>portfolio</i></i> of the <i><i>note</i></i> and is deducted from
+the <i>user</i>'s account balance.  To deposit a <i><i>note</i></i>, a <i>userg must
+have its <i>signature</i> which the <i>issuer</i> produces by signing
+the <i>challenge</i> of the <i>note</i> using his secret key.  Then the
+depositor uses the <code><i>note</i>_deposit</code> command to transfer the
+<i>portfolio</i> of the <i>note</i> into his own account.  So if <i>user</i> <b>A</b>
+wants to transfer a <i>portfolio</i> <b>P</b> to <i>user</i> <b>B</b>, <b>A</b>
+must first withdraw a <i>note</i> containing <b>P</b>, sign it, then
+communicate the <i>note</i>'s identity and signature to <b>B</b> who can
+then deposit it.  More complex schemes can also be created, such
+as re-encrypting the signature of the <i>note</i> with the <i>public key</i> of
+its intended recipient.  </p>
+
+<p>
+<i>Events</i> are the temporal units of the Barter Server.  Every
+<i>event</i> has a unique serial number, starting from 1 and going up.
+Events have the following attributes: <i>time</i> (Epochal time of
+its creation), <i>user</i>s</i> (a list of <i>user</i>s who have permission
+to see this <i>event</i>), <i>type</i> (a string representing what kind
+of <i>event</i> this is: e.g., "<i>user</i>_create", "<i>note</i>_destroy"), and
+<i>data</i> (a hash of attributes whose meaning is dependent on
+the type of the <i>event</i>).  <i>User</i>s can also use <i>event</i>s as a communications
+device, using the <code><i>event</i>_send</code> command, which works
+a lot like email.  An <i>event</i> can be created and made visible to
+any <i>user</i> containing an arbitrary message.  The preferred way
+for <i>user</i>s to exchange <i>value</i> is by communicating <i>note</i>s through
+the <code><i>event</i>_send</code> command.
+</p>
+
+<p>
+<i>Values</i> are simply (<i>denomination</i>, quantity) pairs.  A "quantity"
+is simply any non-negative rational number.  So a <i>value</i> is just some
+amount of some thing.  "A third of all the IBM stock" or "$52.40".
+</p>
+
+<p>
+<i>Portfolios</i> are simply sets of <i>value</i>s.  The canonical form of
+a <i>portfolio</i> contains at most one <i>value</i> of each <i>denomination</i>.
+</p>
+
+</body>
+</html>

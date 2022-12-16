@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use dmath;
+
+if (@ARGV != 1) {
+  print STDERR "Usage: rsa_keygen bits\n";
+  exit 1;
+}
+
+srand(time + $$);
+
+my $bits = shift @ARGV;
+my ($public, $secret, $modulus) = rsa_keygen($bits);
+
+print "public " . $public->to_string . "\n";
+print "secret " . $secret->to_string . "\n";
+print "modulus " . $modulus->to_string . "\n";

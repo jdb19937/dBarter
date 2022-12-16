@@ -1,0 +1,113 @@
+#!/usr/bin/perl
+
+use bom;
+use bom::txn;
+use bif;
+use Getopt::Long;
+
+use Data::Dumper;
+
+sub usage {
+  print STDERR "Usage: listen [-d db_directory] [-h host] acct\n";
+  exit 1;
+}
+
+$options{'d'} = "/usr/local/dbarter/db";
+$options{'h'} = "localhost";
+GetOptions(\%options, 'd=s', 'h=s') == 1 or usage;
+my $acctid = shift(@ARGV) or usage;
+@ARGV and usage;
+
+bom_db_init($options{'d'});
+$SIG{'INT'} = sub { bom_db_exit; exit 1; };
+
+sub fatal {
+  print STDERR "$0: @_";
+  bom_db_exit;
+  exit 1;
+}
+
+sub report_event {
+  my $event = shift;
+  print "id " . $event->id . "\n";
+  print "type " . $event->type . "\n";
+  print $event->data . "\n\n";
+}
+
+my $acct = new bom::acct $acctid;
+
+try_txn {
+  $acct->exists or fatal "acct $acct does not exist.\n";
+  $acct->read;
+} catch {
+  fatal "database error (\$acct->read): $_\n";
+  death;
+};
+
+my $client = new bif::client $options{'h'};
+$client->connected or fatal "cannot connect to $options{'h'}\n";
+
+try {
+  $client->authenticate($acct);
+} catch {
+  fatal "authentication error.\n";
+};
+
+my $last_event;
+try_txn {
+  $last_event = bom::event->get_last_event;
+} catch {
+  fatal "database error (bom::event->get_last_event): $_\n";
+};
+
+my @new_events;
+try {
+  @new_events = sort {
+    $a->id <=> $b->id
+  } $client->event_list($last_event->id + 1);
+
+  for my $event (@new_events) {
+    $client->event_read($event);
+  }
+} catch {
+  fatal "remote recovery error\n";
+};
+
+try_txn {
+  for my $event (@new_events) {
+    $event->write;
+  }
+} catch {
+  fatal "database error (event->write, 1)\n";
+};
+
+for my $event (@new_events) {
+  report_event($event);
+}
+
+while (1) {
+  unless (@{$$client{'queue'}}) {
+    try {
+      $client->read_one;
+    } catch {
+      fatal "error reading event from server\n";
+    };
+  }
+  
+  try_txn {
+    for my $event (@{$$client{'queue'}}) {
+      $event->write;
+    }
+  } catch {
+    fatal "database error (event->write, 2)\n";
+  };
+
+  for my $event (@{$$client{'queue'}}) {
+    report_event($event);
+  }
+  
+  @{$$client{'queue'}} = ();
+}
+
+bom_db_exit;
+exit 0;

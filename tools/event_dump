@@ -1,0 +1,62 @@
+#!/usr/bin/perl
+
+use bom;
+use bom::txn;
+use bif;
+use Getopt::Long;
+
+sub usage {
+  print STDERR "Usage: $0 [-d db_directory]\n";
+  exit 1;
+}
+
+$options{'d'} = "/usr/local/dbarter/db";
+$options{'h'} = "localhost";
+GetOptions(\%options, 'd=s') == 1 or usage;
+@ARGV and usage;
+
+bom_db_init($options{'d'});
+$SIG{'INT'} = sub { bom_db_exit; exit 1; };
+
+sub fatal {
+  print STDERR "$0: @_";
+  bom_db_exit;
+  exit 1;
+}
+
+sub event_report {
+  my $event = shift;
+  print "id " . $event->id . "\n";
+  print "type " . $event->type . "\n";
+  print $event->data . "\n\n";
+}
+
+my $last_event;
+try_txn {
+  $last_event = bom::event->get_last_event;
+} catch {
+  fatal "database error: $_\n";
+};
+
+my @events;
+try_txn {
+  @events = ();
+  for (my $i = 1; $i <= $last_event->id; $i++) {
+    my $event = new bom::event $i;
+    my $status = try {
+      $event->read;
+    } catch {
+      throw $_ if ($_ != DB_KEYEMPTY);
+      $_;
+    } or push(@events, $event);
+  }
+} catch {
+  fatal "database error: $_\n";
+};
+
+for my $event (@events) {
+  event_report($event);
+}
+
+bom_db_exit;
+exit 0;

@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>Financial Infrastructure for the Internet</title>
+</head>
+
+<body bgcolor="#ffffff">
+<img src="images/barter_full.gif">
+<hr noshade>
+<center>
+<b><font size="+3">
+<code>Financial Infrastructure for the Internet</code>
+</font></b>
+<br>
+<font size="-1">
+Written by:
+<i>Dan Brumleve</i>
+<code>
+&lt;<a href="mailto:nothing@shout.net">nothing@shout.net</a>&gt;</code>
+and
+<i>Jim Bowery</i>
+<code>
+&lt;<a href="mailto:jabowery@netcom.com">jabowery@netcom.com</a>&gt;
+</code>
+</font>
+</center>
+
+<hr><b><font size="+1">
+<code>A Brave Old World</code>
+</font></b>
+
+<p>
+With the Internet becoming an increasingly more attractive medium of
+exchange for many different kinds of businesses, it is becoming
+equally attractive to find solutions to the problems in finance
+and financial software that are holding back more automation and
+consumer selection.
+</p>
+
+<p>
+High costs of access to electronic financial services prevent many
+would-be small Internet businesses from entering the market.  Credit
+card debt is dangerous, since issuers must redeem the costs of
+fraudulent purchases to consumers.  This cost ultimately gets
+passed back to merchants in the form of large downpayments and
+high transaction fees.  A related problem is that the security of
+credit cards lies almost entirely in the virtue of one very gregarious
+number; this weak security model makes fraud simple and common,
+contributing to costs.
+</p>
+
+<p>
+Alternative payment systems such as
+<a href="http://www.firstvirtual.com">First Virtual</a> and
+<a href="http://www.egold.com">E-Gold</a> seem to be dead
+or struggling.  Phone-based billing systems (900-numbers) are still
+in use but have a tainted reputation because of inconvenience and
+unaccountability.  Credit cards are apparently the only viable
+option for business-to-consumer transactions on the Internet.
+</p>
+
+<p>
+There are many sites on the Internet that have a lot in common
+with these payment systems and each other.  Stock brokers like
+<a href="http://www.datek.com/">Datek</a> and
+<a href="http://www.etrade.com/">E*Trade</a> keep track of
+the contents of and modifications to their customers'
+portfolios, much the same as your bank keeps track of your
+credit card balance and processes transactions against it.
+</p>
+<p>
+There are many businesses that issue
+promises or coupons to their customers -- some might
+even permit them to be traded or redeemed online.
+This common core of functionality is frequently reimplemented
+with different (usually proprietary) protocols and 
+variations.
+</p>
+<p>
+Another class of finanical instrument is insurance.  Some kinds
+of insurance cover events that affect large numbers of people.
+Earthquake insurance is like this, but surprisingly so is
+most betting, such as sports betting.  There are many internet
+sites dedicated to gambling, and some cater to sports betting,
+but there aren't many that try to translate the market discovery
+of "odds" into generalized insurance.
+</p>
+<p>
+DBarter
+is a possible solution to some of these problems.  It defines
+a simple way to create quantified and transferable electronic promises   
+that are communicated to a user through a web browser or to another
+computer through a simple cross-platform API.  It can perform
+most of the basic operations found in the systems described
+above -- electronic checks, trading value, creating new kinds
+of value, etc.  And unlike a credit card, RSA encryption is
+used for security, making fraud somewhat more difficult.
+</p>
+
+<hr><b><font size="+1"><code>Conceptual Overview</code></font></b>
+
+<p>
+In the real world, value is usually represented by discrete categories:
+$, &yen;, Microsoft common stock, February orange juice futures, sorted
+boxes of uncollected car loans, and other types of commoditized contracts.
+Certain sets of these categories are called currencies, commodities,
+bonds, options, etc.  DBarter uses the catch-all term <i>denomination</i> 
+for any such type of value, and allows these denominations to be
+held or exchanged in any rational-number quantity (or optionally
+an integral multiple of a unit of configurable size).  DBarter does
+not regulate the semantics of its denominations: they are created
+and defined by accounts on the system who can implement client-side
+tools to enforce the backing value of their DBarter denominations.
+</p>
+
+<p>
+Every account on the system has a <i>portfolio</i> which is a set of
+denominations paired with their respective quantities.  Value can be
+withdrawn from these portfolios and converted into transferrable
+objects called <i>notes</i> which can have the intuitive
+characteristics of both cash and bank checks.  DBarter also
+allows accounts to create <i>offers</i> which are promises to
+trade some quantity of one denomination for some quantity of
+another.  An offer is automatically executed when a viable 
+counter-offer is made.
+</p>
+
+<p>
+It is possible to "move" value from an account on one DBarter system
+to an account on another by having a representation of that value
+on both systems and a trusted intermediary who will sign over a
+remote note in exchange for a local note.  Imagine wild evenings of
+inter-auction Pok&eacute;mon arbitrage and independent vendors of unique
+financial derivatives.
+</p>
+
+<hr><b><font size="+1"><code>Implementation and Summary</code></font></b>
+
+<p>
+DBarter 0.1 aims to meet the following requirements:
+
+<ul>
+<li>Fast enough for anyone who can't afford an Oracle license.
+<li>Transaction-protected and reliable.
+<li>Configurable through its own protocol.
+<li>Loosely coupled architecture.
+</ul>
+</p>

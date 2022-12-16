@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>Barter Objects</title>
+</head>
+
+<body bgcolor=#ffffff>
+<h3>Barter Objects</h3>
+
+<hr>
+
+<p>
+Barter's functionality centers around a few basic object types:
+<i>denominations</i>, <i>users</i>, <i>notes</i>, <i>events</i>,
+<i>values</i>, and <i>portfolios</i>.
+</p>
+
+<p>
+<i>Denominations</i> are the units of value.  They can be created
+by any user with appropriate permissions.  A denomination
+has the following attributes: <i>issuer</i> (the user which created
+it) and <i>profile</i> (a text string describing its meaning).
+</p>
+
+<p>
+<i>Users</i> are accounts on the Barter Server.  Users have
+the following attributes: <i>flags</i> (set of permissions flags),
+<i>public</i> (the user's public key, an integer), <i>secret</i>
+(the user's secret key, an integer), <i>modulus</i> (the user's
+modulus, also an integer), and a portfolio that the server
+recognizes the user's ownership of.  The server does not need
+to know the value of <i>secret</i>, but any client applications
+will need this information.
+</p>
+
+<p>
+<i>Notes</i> are instruments of value transfer.  They have the
+following attributes: <i>portfolio</i> (a portfolio that the
+note contains), <i>challenge</i> (a random integer used for
+signing the note), and <i>issuer</i> (the user that created it).
+A user can use the <code>note_withdraw</code> command to
+create a note.  The user specifies a portfolio in the command,
+which becomes the <i>portfolio</i> of the note and is deducted
+from the user's account balance.  To deposit a note, a user
+must have its <i>signature</i> which the issuer produces by signing
+the <i>challenge</i> of the note using his secret key.  Then
+the depositor uses the <code>note_deposit</code> command to
+transfer the portfolio of the note into his own account.
+So if user <b>A</b> wants to transfer a portfolio <b>P</b> to
+user <b>B</b>, <b>A</b> must first withdraw a note containing
+<b>P</b>, sign it, then communicate the note's identity and
+signature to <b>B</b> who can then deposit it.  More complex
+schemes can also be created, such as re-encrypting the signature
+of the note with the public key of its intended recipient.
+</p>
+
+<p>
+<i>Events</i> are the temporal units of the Barter Server.  Every
+event has a unique serial number, starting from 1 and going up.
+Events have the following attributes: <i>time</i> (Epochal time of
+its creation), <i>users</i> (a list of users who have permission
+to see this event), <i>type</i> (a string representing what kind
+of event this is: e.g., "user_create", "note_destroy"), and
+<i>data</i> (a hash of attributes whose meaning is dependent on
+the type of the event).  Users can also use events as a communications
+device, using the <code>event_send</code> command, which works
+a lot like email.  An event can be created and made visible to
+any user containing an arbitrary message.  The preferred way
+for users to exchange value is by communicating notes through
+the <code>event_send</code> command.
+</p>
+
+<p>
+<i>Values</i> are simply (denomination, quantity) pairs.  A "quantity"
+is simply any non-negative rational number.  So a value is just some
+amount of some thing.  "A third of all the IBM stock" or "$52.40".
+</p>
+
+<p>
+<i>Portfolios</i> are simply sets of values.  The canonical form of
+a portfolio contains at most one value of each denomination.
+</p>
+
+</body>
+</html>

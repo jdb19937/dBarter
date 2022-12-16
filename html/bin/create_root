@@ -1,0 +1,9 @@
+#!/bin/sh
+
+/usr/local/dbarter/bin/acct_create -d /usr/local/dbarter/html/db root
+/usr/local/dbarter/bin/acct_set -d /usr/local/dbarter/html/db root public 1
+/usr/local/dbarter/bin/acct_set -d /usr/local/dbarter/html/db root secret 1
+/usr/local/dbarter/bin/acct_set -d /usr/local/dbarter/html/db root modulus 2
+/usr/local/dbarter/bin/acct_set -d /usr/local/dbarter/html/db root promise 'promise'
+/usr/local/dbarter/bin/acct_set -d /usr/local/dbarter/html/db root flags 'super'
+/usr/local/dbarter/bin/acct_set -d /usr/local/dbarter/html/db root passwd 'root'

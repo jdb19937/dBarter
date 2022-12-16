@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>The Barter Server</title>
+</head>
+
+<body bgcolor=#ffffff>
+<h3>The Barter Server</h3>
+
+<hr>
+
+<p>
+The Barter Server, once compiled and installed, can be invoked with the
+<code>barterd.start</code> command, installed by default in
+<code>/usr/local/barter/bin</code>.  It can be shutdown with
+<code>barterd.stop</code>.  These two programs are simply shell
+scripts and invoke <code>barterd</code> with certain default parameters,
+so you may wish to edit them.
+</p>
+
+<p>
+When the Barter Server is running, you can telnet to it.  By default
+it is configured to run on port <code>1134</code>.  You will notice
+that every message it sends back to you is in the following format:
+</p>
+
+<pre>
+[3-digit code] [human-readable description of code's meaning]
+[data, can be multiple lines or empty]
+.
+</pre>
+
+<p>
+The 3-digit code determines the meaning and context of the message.
+You can see the symbolic names for these codes defined in the include
+file <code>bif.h</code>.
+</p>
+
+<p>
+Commands that are sent to the server are simply command names with
+space-delimeted argument lists.  Here are a few examples you can try:
+</p>
+
+<pre>
+denom_create foobar
+denom_read foobar
+user_create nothing
+user_read nothing
+balance
+event_send nothing Hello+Mr.+Nothing
+</pre>
+
+<p>
+However, you will probably find it more convenient to interact with
+the Barter Server via the Perl client API.  The module to use is
+<code>bif::client</code>.  It contains methods for all of the Barter
+Server commands as well as some wrappers to simplify compound operations
+(like authentication).
+</p>
+
+</body>
+</html>

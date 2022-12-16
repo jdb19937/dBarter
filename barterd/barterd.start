@@ -1,0 +1,7 @@
+#!/bin/sh
+
+HOST=localhost
+PORT=1134
+ROOT=/usr/local/dbarter
+
+$ROOT/bin/barterd -h $HOST -p $PORT -d $ROOT/db &

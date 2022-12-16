@@ -1,0 +1,6 @@
+#!/bin/sh
+
+ROOT=/usr/local/dbarter
+
+kill `cat $ROOT/db/barterd.pid`
+rm -f $ROOT/db/barterd.pid

@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+use bom;
+use bom::txn;
+use Getopt::Long;
+
+sub usage {
+  print STDERR "Usage: acct_read [-d db_directory] acct\n";
+  exit 1;
+}
+
+$options{'d'} = "/usr/local/dbarter/db";
+GetOptions(\%options, 'd=s') eq 1 or usage;
+my $acctid = shift(@ARGV) or usage;
+
+bom_db_init($options{'d'});
+
+my $acct = new bom::acct $acctid;
+
+try_txn {
+  my $exists = $acct->exists;
+  
+  if (!$exists) {
+    print STDERR "$0: acct $acct does not exist\n";
+    exit 1;
+  }
+
+  $acct->read;
+} catch {
+  print STDERR "$0: transaction failed: $_\n";
+  bom_db_exit;
+  exit 1;
+};
+
+for my $key (qw(public secret modulus promise portfolio)) {
+  next unless defined($$acct{$key});
+  print $key . ' ' . $$acct{$key} . "\n";
+}
+
+bom_db_exit;
+
+exit 0;
+

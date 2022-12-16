@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+
+use bom;
+use bom::txn;
+use Getopt::Long;
+
+sub usage {
+  print STDERR "Usage: acct_create [-d db_directory] acct\n";
+  exit 1;
+}
+
+$options{'d'} = "/usr/local/dbarter/db";
+GetOptions(\%options, 'd=s') eq 1 or usage;
+my $acctid = shift(@ARGV) or usage;
+
+bom_db_init($options{'d'});
+
+my $acct = new bom::acct $acctid;
+
+try_txn {
+  my $exists = $acct->exists;
+ 
+  if ($exists) {
+    print STDERR "$0: acct $acct already exists\n";
+    exit 1;
+  }
+  
+  $acct->public(new dmath::bz 1);
+  $acct->modulus(new dmath::bz 2);
+  $acct->flags(0);
+  $acct->promise("");
+  
+  $acct->write;
+} catch {
+  print STDERR "$0: transaction failed: $_\n";
+};
+
+bom_db_exit;
+
+exit 0;

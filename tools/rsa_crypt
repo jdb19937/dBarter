@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+use dmath;
+
+if (@ARGV != 3) {
+  print STDERR "Usage: rsa_crypt data exponent modulus\n";
+  exit 1;
+}
+
+my ($data, $exponent, $modulus) = map { new dmath::bz $_ } @ARGV;
+my $result = rsa_crypt($data, $exponent, $modulus);
+
+print $result->to_string . "\n";

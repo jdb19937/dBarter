@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Modeling Your Business With Barter</title>
+</head>
+
+<body bgcolor=#ffffff>
+<h3>Modeling Your Business With Barter</h3>
+
+<hr>
+
+<p>
+Many kinds of value can be encoded into Barter denominations, but the
+best way to do this isn't always obvious.
+</p>
+
+<p>
+A common case is when you have a product or service that is
+delivered upon redemption of a denomination representing it.  For
+example, you're Pizza Hut.  You want to use Barter to establish
+a secondary market on pizzas.  One way to do it would be to
+create a denomination for every possible type of pizza that 
+someone might order, e.g.:
+</p>
+
+<ul>
+<li>pizzalarge_pepperoni_extracheese
+<li>pizzalarge_pepperoni_mushroom
+<li>pizzasmall_mushroom_sausage
+<li>pizzasmall_mushroom_sausage_pepperoni_anchovies_extracheese
+<li>...
+</ul>
+
+<p>
+As you can see, this can quickly get out of hand.  Every time you add
+a new topping you'll have to double the number of denominations!
+And you'll have to convert all pizza types into canonical forms 
+to avoid the confusion between <code>pizzasmall_mushroom_sausage</code>
+and <code>pizzasmall_sausage_mushroom</code>.
+</p>
+
+<p>
+A better way to model this would be to use more than one denomination.
+The value of a pizza can be additively decomposed into component values:
+it's the base price for a pizza of a certain size, plus charges
+for each extra topping.  So you can get by with just the following
+denominations:
+</p>
+
+<ul>
+<li>pizza_small
+<li>pizza_medium
+<li>pizza_large
+<li>mushrooms
+<li>pepperoni
+<li>sausage
+<li>anchovies
+<li>extracheese
+</ul>
+
+<p>
+When a user wants to request delivery on a pizza, he can send a message
+to Pizza Hut with a signed note containing a portfolio with a
+pizza size denomination and a set of topping denominations.  The
+pizza size denominations and the topping denominations can now be
+sold and priced seperately.  This technique works for any product
+or service whose value can be additively decomposed.
+</p>
+
+<p>
+Sometimes, however, a product or service will have value components
+that do not combine additively.  For example, say you wanted to farm
+out CPU time on the internet.  One customer might want to rent
+100 CPUs in parallel for 10 hours, while another customer might want
+a single CPU for 1000 hours.  The total CPU time is the same but
+both services may be priced very differently.  So the price of 
+CPU time is a function of two variables (total CPU time and number
+of CPUs).
+</p>
+
+<p>
+In cases such as this where the price of the service is a function
+of two variables, say X and Y, Barter can approximate the
+price with a piecewise linear function.  The idea is to create a
+number of denominations, each of which is associated with a
+different value of the ratio X / Y.  For example:
+</p>
+
+<ul>
+<li>CPU_1
+<li>CPU_10
+<li>CPU_100
+<li>CPU_1000
+<li>...
+</ul>
+
+<p>
+Each of these denominations would be redeemable for a total of 1 hour
+of CPU time split up between the specified number of CPUs (1, 10, 100, ...).
+Portfolios of CPU time that fall between the lines can still be constructed:
+for example, if you acquire a CPU_1 and a 10 CPU_10s, you now have an
+hour of CPU time on each of 11 CPUs.
+</p>
+
+</body>
+</html>
